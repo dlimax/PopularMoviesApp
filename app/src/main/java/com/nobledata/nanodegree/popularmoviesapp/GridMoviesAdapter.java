@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 public class GridMoviesAdapter extends BaseAdapter {
-    private final List<Map<String, String>> mData;
+    private final List<ParcelableMovie> mData;
     private Context mContext;
 
 
-    public GridMoviesAdapter(Context context, List<Map<String, String>> list) {
+    public GridMoviesAdapter(Context context, List<ParcelableMovie> list) {
         mContext = context;
         mData = list;
     }
@@ -35,7 +35,7 @@ public class GridMoviesAdapter extends BaseAdapter {
     }
 
     @Override
-    public Map<String, String> getItem(int position) {
+    public ParcelableMovie getItem(int position) {
         return  mData.get(position);
     }
 
@@ -57,7 +57,7 @@ public class GridMoviesAdapter extends BaseAdapter {
             result = convertView;
         }
 
-        HashMap<String, String> item = (HashMap<String, String>) getItem(position);
+        ParcelableMovie item = (ParcelableMovie ) getItem(position);
         ImageView imageView = ((ImageView) result.findViewById(R.id.movie_poster));
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("http")
@@ -65,7 +65,7 @@ public class GridMoviesAdapter extends BaseAdapter {
                 .appendPath("t")
                 .appendPath("p")
                 .appendPath("w185")
-                .appendPath(item.get("poster_path").replace("/", ""));
+                .appendPath(item.getPosterPath().replace("/", ""));
         String imgUrl = builder.build().toString();
         Picasso.with(mContext).load(imgUrl).into(imageView);
         return result;
