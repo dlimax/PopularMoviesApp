@@ -14,27 +14,30 @@ import android.view.View;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    public android.app.Fragment mContent;
+    public FetchMoviesFragment mContent;
+    public ArrayList<ParcelableMovie> mData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             //Restore the fragment's instance
-            mContent =  getFragmentManager().getFragment(
+            mContent =  (FetchMoviesFragment)getFragmentManager().getFragment(
                     savedInstanceState, "mContent");
-        }
-        else{
-            mContent = getFragmentManager().findFragmentById(R.id.fragment);
+            mContent.mData = savedInstanceState.getParcelableArrayList(FetchMoviesFragment.SAVED_BUNDLE_TAG);
         }
         setContentView(R.layout.activity_main);
     }
 
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         //Save the fragment's instance
-        getFragmentManager().putFragment(outState, "mContent", mContent);
+        mContent = (FetchMoviesFragment)getFragmentManager().findFragmentById(R.id.fragment);
+        mData = mContent.mData;
+        outState.putParcelableArrayList(mContent.SAVED_BUNDLE_TAG, mData);
+        super.onSaveInstanceState(outState);
     }
 }

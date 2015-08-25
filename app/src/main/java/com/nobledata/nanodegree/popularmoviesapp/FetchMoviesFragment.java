@@ -47,9 +47,8 @@ public class FetchMoviesFragment extends android.app.Fragment {
     private GridMoviesAdapter itemsAdapter;
     public ArrayList<ParcelableMovie> mData;
     private View rootView;
-    private Bundle savedState = null;
-    private boolean createdStateInDestroyView;
-    private static final String SAVED_BUNDLE_TAG = "key";
+    public static final String SAVED_BUNDLE_TAG = "key";
+    private String lastUsedOrderByCriteria;
 
 
     public FetchMoviesFragment() {
@@ -62,15 +61,17 @@ public class FetchMoviesFragment extends android.app.Fragment {
         if(savedInstanceState!=null){
             mData = savedInstanceState.getParcelableArrayList(SAVED_BUNDLE_TAG);
         }
+        SharedPreferences settings;
+        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        lastUsedOrderByCriteria = settings.getString("pref_order_criteria", "1");
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_fetchmovies, container, false);
-        ((MainActivity)getActivity()).mContent = (android.app.Fragment)this;
         setHasOptionsMenu(true);
-        setRetainInstance(true);
         return rootView;
     }
 
@@ -78,22 +79,14 @@ public class FetchMoviesFragment extends android.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(mData==null) {
-            FetchMoviesTask task = new FetchMoviesTask();
-            task.execute(savedState);
-        }
-        else{
-            updateGridMovies();
+        SharedPreferences settings;
+        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String order = settings.getString("pref_order_criteria", "1");
+        if(mData==null || !(lastUsedOrderByCriteria.equals(order))) {
+            lastUsedOrderByCriteria = order;
+            (new FetchMoviesTask()).execute();
         }
     }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(SAVED_BUNDLE_TAG, mData);
-    }
-    
 
 
     @Override
@@ -171,7 +164,6 @@ public class FetchMoviesFragment extends android.app.Fragment {
             String myUrl = builder.build().toString();
             URL url = new URL(myUrl);
 
-            // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -242,7 +234,6 @@ public class FetchMoviesFragment extends android.app.Fragment {
         final String TMDB_POPULARITY = "popularity";
         final String TMDB_RELEASE_DATE = "release_date";
 
-
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
         JSONArray moviesArray = moviesJson.getJSONArray(TMDB_RESULTS);
 
@@ -266,10 +257,8 @@ public class FetchMoviesFragment extends android.app.Fragment {
         public class FetchMoviesTask extends AsyncTask<Bundle, Void, ArrayList<ParcelableMovie>> {
         @Override
         protected ArrayList<ParcelableMovie> doInBackground(Bundle... params) {
-            Log.v(LOG_TAG, "Asynctasking");
+            Log.v(LOG_TAG, "Asynctasking...");
             ArrayList<ParcelableMovie> aMovies = getMovies();
-            if(params[0]!=null)
-                params[0].putParcelableArrayList("key", aMovies);
             return aMovies;
         }
 

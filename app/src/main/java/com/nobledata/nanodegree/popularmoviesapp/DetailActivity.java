@@ -13,6 +13,10 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

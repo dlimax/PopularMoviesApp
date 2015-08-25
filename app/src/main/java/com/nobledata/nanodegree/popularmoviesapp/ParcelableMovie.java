@@ -17,6 +17,11 @@ public class ParcelableMovie implements Parcelable {
     }
 
     protected ParcelableMovie(Parcel in) {
+        title = in.readString();
+        overview = in.readString();
+        posterPath = in.readString();
+        releaseDate = in.readString();
+        voteAverage = in.readString();
     }
 
     public static final Creator<ParcelableMovie> CREATOR = new Creator<ParcelableMovie>() {
@@ -38,8 +43,12 @@ public class ParcelableMovie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(overview);
+        dest.writeString(posterPath);
+        dest.writeString(releaseDate);
+        dest.writeString(voteAverage);
     }
-
     public String getVoteAverage() {
         return voteAverage;
     }
