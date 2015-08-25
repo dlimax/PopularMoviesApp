@@ -41,7 +41,7 @@ import java.util.Set;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class FetchMoviesFragment extends Fragment {
+public class FetchMoviesFragment extends android.app.Fragment {
 
     private static final String LOG_TAG = "FetchMoviesFragment";
     private GridMoviesAdapter itemsAdapter;
@@ -68,6 +68,7 @@ public class FetchMoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_fetchmovies, container, false);
+        ((MainActivity)getActivity()).mContent = (android.app.Fragment)this;
         setHasOptionsMenu(true);
         setRetainInstance(true);
         return rootView;
